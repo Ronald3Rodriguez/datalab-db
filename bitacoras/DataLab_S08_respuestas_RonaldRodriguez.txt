@@ -1,0 +1,255 @@
+DataLab - Semana 8 | Plantilla de respuestas
+Estudiante: Ronald Rodriguez
+
+EJERCICIO 1
+Consulta / respuesta:
+SELECT id_proyecto, nombre_proyecto
+FROM dbo.proyecto;
+Observaciones:
+Se listan los 100 proyectos existentes mostrando exclusivamente su identificador y nombre; se omite el uso de asterisco para extraer únicamente los datos estrictamente necesarios.
+
+EJERCICIO 2
+Consulta / respuesta:
+SELECT id_dataset, nombre, fuente
+FROM dbo.dataset
+WHERE fuente = 'externa';
+Observaciones:
+Se aplica un filtro de igualdad para aislar los 50 conjuntos de datos que proceden de orígenes externos, los cuales coinciden con los identificadores impares dentro de la semilla.
+
+EJERCICIO 3
+Consulta / respuesta:
+SELECT id_metrica, nombre_metrica, valor
+FROM dbo.metrica
+WHERE valor >= 0.80;
+Observaciones:
+Esta instrucción arroja 75 resultados de los 200 totales, representando el subconjunto de mejor rendimiento. El operador incluye de forma directa los valores que llegan exactamente al umbral de 0.80.
+
+EJERCICIO 4
+Consulta / respuesta:
+SELECT id_metrica, nombre_metrica, valor
+FROM dbo.metrica
+WHERE valor BETWEEN 0.70 AND 0.90;
+Observaciones:
+La cláusula de intervalo engloba los límites de manera inclusiva, comportándose igual que combinar condiciones con mayor y menor o igual. El sistema arroja 104 métricas, superando ligeramente la mitad del total.
+
+EJERCICIO 5
+Consulta / respuesta:
+SELECT id_dataset, nombre, fuente
+FROM dbo.dataset
+WHERE fuente IN ('interna', 'externa');
+Observaciones:
+La función del operador equivale a concatenar varias condiciones de tipo lógico alternativo entre ambos orígenes. Dado que las restricciones de la tabla solo permiten estos dos estados, la consulta recupera los 100 registros sin descartar ninguno.
+
+EJERCICIO 6
+Consulta / respuesta:
+SELECT id_dataset, nombre
+FROM dbo.dataset
+WHERE nombre LIKE 'EEG%';
+Observaciones:
+El símbolo comodín permite capturar cualquier texto subsecuente al prefijo indicado. Como consecuencia, se obtienen 25 datasets cuyos códigos identificadores coinciden con múltiplos exactos de cuatro.
+
+EJERCICIO 7
+Consulta / respuesta:
+-- Datasets con tamaño desconocido
+SELECT id_dataset, nombre, tamanio_filas
+FROM dbo.dataset
+WHERE tamanio_filas IS NULL;
+
+-- Datasets con tamaño informado
+SELECT id_dataset, nombre, tamanio_filas
+FROM dbo.dataset
+WHERE tamanio_filas IS NOT NULL;
+Observaciones:
+Como los campos vacíos representan una incógnita y no una cifra numérica, resulta obligatorio emplear la cláusula de validación nula en lugar de un signo de igualdad. El análisis arroja 90 registros completos frente a 10 que carecen de esta métrica.
+
+EJERCICIO 8
+Consulta / respuesta:
+SELECT id_dataset, nombre, fuente, fecha_carga
+FROM dbo.dataset
+WHERE fuente = 'externa'
+AND fecha_carga >= '20260101';
+Observaciones:
+El conector exige el cumplimiento simultáneo de ambas reglas lógicas. Se prefirió el modelo de fecha compacta para prevenir conflictos de interpretación regional en la plataforma; se visualizan todos los externos al haberse ingresado con posterioridad a dicho periodo.
+
+EJERCICIO 9
+Consulta / respuesta:
+-- Con NOT
+SELECT id_dataset, nombre, fuente
+FROM dbo.dataset
+WHERE NOT fuente = 'externa';
+
+-- Con <>
+SELECT id_dataset, nombre, fuente
+FROM dbo.dataset
+WHERE fuente <> 'externa';
+Observaciones:
+Ambos enfoques devuelven exactamente las mismas 50 filas correspondientes al sector interno, comportándose como sinónimos técnicos. Al estar prohibidos los nulos en este campo, no se generan diferencias de comportamiento.
+
+EJERCICIO 10
+Consulta / respuesta:
+SELECT nombre, fecha_carga
+FROM dbo.dataset
+ORDER BY fecha_carga DESC;
+Observaciones:
+La directiva de organización descendente posiciona en la parte superior los ingresos más recientes de la bitácora y traslada los registros antiguos hacia el final de la lista.
+
+EJERCICIO 11
+Consulta / respuesta:
+SELECT nombre, fuente, fecha_carga
+FROM dbo.dataset
+ORDER BY fuente ASC, fecha_carga DESC;
+Observaciones:
+Se procesa un doble criterio: primero separa alfabéticamente por canal de procedencia y, subsecuentemente, acomoda las fechas desde la más actual hacia la más remota dentro de cada bloque.
+
+EJERCICIO 12
+Consulta / respuesta:
+SELECT COUNT(*) AS total_datasets
+FROM dbo.dataset;
+Observaciones:
+Este método cuantifica la totalidad de los componentes tabulares sin discriminar campos vacíos, confirmando un volumen exacto de 100 conjuntos de datos.
+
+EJERCICIO 13
+Consulta / respuesta:
+SELECT AVG(valor) AS promedio,
+MIN(valor) AS minimo,
+MAX(valor) AS maximo
+FROM dbo.metrica;
+Observaciones:
+Se sintetizan las 200 mediciones en un solo reporte estadístico: una cota superior de 0.98, una inferior de 0.55 y una media global de 0.7539 que se posiciona por debajo de la meta esperada.
+
+EJERCICIO 14
+Consulta / respuesta:
+SELECT fuente, COUNT(*) AS cantidad_datasets
+FROM dbo.dataset
+GROUP BY fuente;
+Observaciones:
+La sectorización por bloques agrupa los registros según su procedencia y la función acumulativa los contabiliza, evidenciando una distribución simétrica de 50 elementos para cada categoría.
+
+EJERCICIO 15
+Consulta / respuesta:
+SELECT nombre_metrica, AVG(valor) AS promedio
+FROM dbo.metrica
+GROUP BY nombre_metrica;
+Observaciones:
+Se obtienen dos perfiles analíticos donde el indicador de exactitud muestra un rendimiento promedio superior (aproximadamente 0.7927) en comparación con el puntaje de precisión (cercano a 0.7150).
+
+EJERCICIO 16
+Consulta / respuesta:
+SELECT nombre_metrica, AVG(valor) AS promedio
+FROM dbo.metrica
+GROUP BY nombre_metrica
+HAVING AVG(valor) > 0.80;
+Observaciones:
+Es inviable utilizar filtros de selección tradicionales debido a que el procesamiento evaluaría filas aisladas antes de consolidar el cálculo matemático. La ausencia de filas retornadas es totalmente correcta, demostrando que ninguna métrica supera el umbral preestablecido.
+
+EJERCICIO 17
+Consulta / respuesta:
+INSERT INTO dbo.proyecto (nombre_proyecto, descripcion)
+VALUES (N'Proyecto de práctica S08',
+N'Registro temporal para practicar DML.');
+
+SELECT id_proyecto, nombre_proyecto, descripcion
+FROM dbo.proyecto
+WHERE nombre_proyecto = N'Proyecto de práctica S08';
+Observaciones:
+Se prescinde de declarar el identificador numérico al encargarse el sistema de generarlo de forma automática mediante la propiedad interna. El prefijo especial protege la integridad de los caracteres con tilde, validándose su inserción exitosa mediante la consulta posterior.
+
+EJERCICIO 18
+Consulta / respuesta:
+-- Antes
+SELECT id_proyecto, nombre_proyecto, descripcion
+FROM dbo.proyecto
+WHERE nombre_proyecto = N'Proyecto de práctica S08';
+
+UPDATE dbo.proyecto
+SET descripcion = N'Descripcion actualizada durante la practica S08.'
+WHERE nombre_proyecto = N'Proyecto de práctica S08';
+
+-- Después
+SELECT id_proyecto, nombre_proyecto, descripcion
+FROM dbo.proyecto
+WHERE nombre_proyecto = N'Proyecto de práctica S08';
+Observaciones:
+Previo a cualquier alteración se ejecutó una validación unitaria del objetivo, garantizando que el cambio afectara únicamente a la fila indicada y comprobando el nuevo texto de manera posterior.
+
+EJERCICIO 19
+Consulta / respuesta:
+-- Antes
+SELECT id_proyecto, nombre_proyecto
+FROM dbo.proyecto
+WHERE nombre_proyecto = N'Proyecto de práctica S08';
+
+DELETE FROM dbo.proyecto
+WHERE nombre_proyecto = N'Proyecto de práctica S08';
+
+-- Después (debe devolver 0 filas)
+SELECT id_proyecto, nombre_proyecto
+FROM dbo.proyecto
+WHERE nombre_proyecto = N'Proyecto de práctica S08';
+Observaciones:
+La precisión en los parámetros de búsqueda salvaguarda los registros de origen institucional. Al carecer de dependencias vinculadas o elementos secundarios asociados, la baja se ejecuta de forma limpia y directa.
+
+EJERCICIO 20
+Consulta / respuesta:
+SELECT nombre_metrica, AVG(valor) AS promedio
+FROM dbo.metrica
+GROUP BY nombre_metrica
+HAVING AVG(valor) > 0.80;
+Observaciones:
+La operación se limita al análisis de una única tabla sin recurrir a cruces complejos. La respuesta nula confirma que tanto la exactitud como la precisión se mantienen por debajo del estándar de excelencia requerido.
+
+PREGUNTA DE NEGOCIO 1
+Consulta:
+SELECT fuente, COUNT(*) AS cantidad_datasets
+FROM dbo.dataset
+GROUP BY fuente;
+Interpretación:
+El análisis demuestra que los recursos informáticos se encuentran repartidos en partes iguales entre orígenes externos e internos.
+
+PREGUNTA DE NEGOCIO 2
+Consulta:
+SELECT id_dataset, nombre, tamanio_filas
+FROM dbo.dataset
+WHERE tamanio_filas IS NULL;
+Interpretación:
+Se detecta un grupo específico de diez elementos que carecen de especificación cuantitativa en su dimensión de registros, evidenciando un campo por completar.
+
+PREGUNTA DE NEGOCIO 3
+Consulta:
+SELECT MAX(tamanio_filas) AS tamanio_maximo
+FROM dbo.dataset;
+Interpretación:
+El registro más voluminoso documentado alcanza las 123.750 unidades. Cabe destacar que la función nativa desestima los valores indefinidos, por lo que elementos superiores sin auditar quedan fuera del cálculo.
+
+PREGUNTA DE NEGOCIO 4
+Consulta:
+SELECT nombre_metrica, AVG(valor) AS promedio
+FROM dbo.metrica
+GROUP BY nombre_metrica;
+Interpretación:
+Los valores promedio reflejan un comportamiento general donde la tasa de acierto se sitúa cerca del 79.2% frente a un nivel de precisión menor.
+
+PREGUNTA DE NEGOCIO 5
+Consulta:
+SELECT nombre_metrica, AVG(valor) AS promedio
+FROM dbo.metrica
+GROUP BY nombre_metrica
+HAVING AVG(valor) > 0.80;
+Interpretación:
+El conjunto resultante permanece vacío debido a que las mediciones actuales se estancan por debajo de la exigencia del 80% de calidad.
+
+PREGUNTA DE NEGOCIO 6
+Consulta:
+SELECT algoritmo, COUNT(*) AS cantidad_modelos
+FROM dbo.modelo
+GROUP BY algoritmo;
+Interpretación:
+La arquitectura computacional mantiene un esquema simétrico compuesto por cinco enfoques algorítmicos que aportan exactamente veinte variantes cada uno.
+
+PREGUNTA DE NEGOCIO 7
+Consulta:
+SELECT id_modelo, nombre, version, algoritmo
+FROM dbo.modelo
+WHERE version LIKE '1.2%';
+Interpretación:
+Se visualizan veinte configuraciones específicas vinculadas de manera exclusiva al enfoque Random Forest, obedeciendo a la lógica paramétrica utilizada durante la carga inicial de prueba.
