@@ -3,8 +3,6 @@
 
 ## Semana 6/7 — Preguntas de negocio resueltas con DML
 
-> **Cómo usar este archivo:** pega este bloque **al final** de tu `casos_uso/s06-preguntas-negocio.md` existente (no reemplaces lo que ya tienes). Si el archivo aún no existe, créalo con este contenido.
-
 Cada pregunta de negocio se traduce a una operación SQL sobre las tablas reales de DataLab. Todas se verifican con un `SELECT`.
 
 | # | Pregunta de negocio | Operación | Tablas implicadas |
